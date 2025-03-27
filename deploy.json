@@ -26,44 +26,6 @@
       "properties": {
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       }
-    },
-    {
-      "type": "Microsoft.Sql/servers",
-      "apiVersion": "2022-02-01-preview",
-      "name": "[parameters('sqlServerName')]",
-      "location": "[resourceGroup().location]",
-      "properties": {
-        "administratorLogin": "[parameters('sqlAdminUsername')]",
-        "administratorLoginPassword": "[parameters('sqlAdminPassword')]"
-      },
-      "resources": [
-        {
-          "type": "databases",
-          "apiVersion": "2022-02-01-preview",
-          "name": "[parameters('sqlDatabaseName')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
-          ],
-          "properties": {
-            "collation": "SQL_Latin1_General_CP1_CI_AS",
-            "maxSizeBytes": "2147483648",
-            "sampleName": "AdventureWorksLT"
-          }
-        }
-      ]
-    },
-    {
-      "type": "Microsoft.Web/sites/config",
-      "apiVersion": "2022-03-01",
-      "name": "[concat(parameters('webAppName'), '/appsettings')]",
-      "location": "[resourceGroup().location]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
-      ],
-      "properties": {
-        "ConnectionStrings:DefaultConnection": "[concat('Server=tcp:', parameters('sqlServerName'), '.database.windows.net,1433;Initial Catalog=', parameters('sqlDatabaseName'), ';Persist Security Info=False;User ID=', parameters('sqlAdminUsername'), ';Password=', parameters('sqlAdminPassword'), ';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
-      }
     }
   ],
   "parameters": {
@@ -79,33 +41,6 @@
       "defaultValue": "MyMvcApp",
       "metadata": {
         "description": "Name of the Web App."
-      }
-    },
-    "sqlServerName": {
-      "type": "string",
-      "defaultValue": "myMvcAppSqlServer",
-      "metadata": {
-        "description": "Name of the SQL Server."
-      }
-    },
-    "sqlDatabaseName": {
-      "type": "string",
-      "defaultValue": "MyMvcAppDatabase",
-      "metadata": {
-        "description": "Name of the SQL Database."
-      }
-    },
-    "sqlAdminUsername": {
-      "type": "string",
-      "defaultValue": "sqladmin",
-      "metadata": {
-        "description": "SQL Server admin username."
-      }
-    },
-    "sqlAdminPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "SQL Server admin password."
       }
     }
   }
